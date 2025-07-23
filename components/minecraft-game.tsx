@@ -864,11 +864,14 @@ const ChunkMesh = memo(({ chunk, textureAtlas }: { chunk: ChunkData; textureAtla
 ChunkMesh.displayName = "ChunkMesh"
 
 // ADVANCED MOVEMENT CONFIG
+// Base walk speed approximates vanilla Minecraft (~4.3 m/s)
+const BASE_SPEED = 4.317
+
 const MOVEMENT_CONFIG = {
   // Core physics
   accel_ground: 50,
   accel_air: 150,
-  max_air_speed: 30, // Only enforced when debug flag is true
+  max_air_speed: BASE_SPEED * (30 / 400), // Only enforced when debug flag is true
   air_drag: 0.02,
   ground_friction: 8.0,
 
@@ -877,18 +880,18 @@ const MOVEMENT_CONFIG = {
   bhop_preserve_speed: true,
 
   // Slide mechanics (Titanfall-style)
-  slide_threshold: 350, // ups to trigger slide
-  slide_boost: 70,
+  slide_threshold: BASE_SPEED * (350 / 400), // Speed to trigger slide
+  slide_boost: BASE_SPEED * (70 / 400),
   slide_decay: 0.97,
   slide_max_duration: 0.4, // 400ms
   slide_height_multiplier: 0.5,
 
   // Wallrun
   wallrun_attach_distance: 1.2,
-  wallrun_force: 30,
+  wallrun_force: BASE_SPEED * (30 / 400),
   wallrun_duration: 0.9, // 900ms
-  wall_jump_out_force: 300,
-  wall_jump_fwd_force: 150,
+  wall_jump_out_force: BASE_SPEED * (300 / 400),
+  wall_jump_fwd_force: BASE_SPEED * (150 / 400),
   wallrun_up_bias: 5,
 
   // Surf ramps
@@ -1323,7 +1326,7 @@ const Player = memo(({ isLocked }: { isLocked: boolean }) => {
                 velocity.current,
                 worldInput
                   .clone()
-                  .multiplyScalar(400), // Desired ground speed
+                  .multiplyScalar(BASE_SPEED), // Desired ground speed
                 MOVEMENT_CONFIG.accel_ground,
                 delta,
               )
@@ -1344,7 +1347,7 @@ const Player = memo(({ isLocked }: { isLocked: boolean }) => {
                 velocity.current,
                 worldInput
                   .clone()
-                  .multiplyScalar(30), // Air strafe speed
+                  .multiplyScalar(BASE_SPEED), // Air strafe speed
                 MOVEMENT_CONFIG.accel_air,
                 delta,
               )
@@ -1408,7 +1411,7 @@ const Player = memo(({ isLocked }: { isLocked: boolean }) => {
               const surfInput = projectVectorOntoPlane(worldInput, surfNormal.current)
               velocity.current = applyAirAcceleration(
                 velocity.current,
-                surfInput.multiplyScalar(30),
+                surfInput.multiplyScalar(BASE_SPEED),
                 MOVEMENT_CONFIG.accel_air,
                 delta,
               )
