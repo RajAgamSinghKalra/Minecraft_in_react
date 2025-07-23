@@ -139,7 +139,7 @@ function Player() {
     const { forward, backward, left, right, jump } = getKeys()
 
     // Movement
-    const speed = 5
+    const speed = 4.317 // Approximate Minecraft walking speed
     direction.current.set(0, 0, 0)
 
     if (forward) direction.current.z -= 1
