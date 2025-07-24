@@ -1431,10 +1431,28 @@ const Player = memo(({ isLocked }: { isLocked: boolean }) => {
         newPosition.add(velocity.current.clone().multiplyScalar(delta))
 
         // Simple collision detection (reuse existing system)
-        const playerBox = new THREE.Box3().setFromCenterAndSize(
-          newPosition,
-          new THREE.Vector3(PLAYER_WIDTH, PLAYER_HEIGHT, PLAYER_WIDTH),
+        const playerFeet = new THREE.Vector3(
+          newPosition.x,
+          newPosition.y - PLAYER_EYE_HEIGHT,
+          newPosition.z,
         )
+        const playerHead = new THREE.Vector3(
+          newPosition.x,
+          newPosition.y - PLAYER_EYE_HEIGHT + PLAYER_HEIGHT,
+          newPosition.z,
+        )
+        const playerBox = new THREE.Box3().setFromPoints([
+          new THREE.Vector3(
+            playerFeet.x - PLAYER_WIDTH / 2,
+            playerFeet.y,
+            playerFeet.z - PLAYER_WIDTH / 2,
+          ),
+          new THREE.Vector3(
+            playerFeet.x + PLAYER_WIDTH / 2,
+            playerHead.y,
+            playerFeet.z + PLAYER_WIDTH / 2,
+          ),
+        ])
 
         let collision = false
         const minX = Math.floor(playerBox.min.x)
